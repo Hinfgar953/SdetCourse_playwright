@@ -4,10 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "make-apt":"npx playwright test  tests/functional/make.apt.spec.ts --headed",
-    "element-interaction":"npx playwright test  tests/demo/element-handling.spec.ts --headed",
-    "demo":"npx playwright test tests/demo/mytest.spec.ts --headed",
-    "inventory":"npx playwright test tests/functional/inventory.spec.ts --headed"
+    "make-apt": "npx playwright test  tests/functional/make.apt.spec.ts --headed",
+    "element-interaction": "npx playwright test  tests/demo/element-handling.spec.ts --headed",
+    "demo": "npx playwright test tests/demo/mytest.spec.ts --headed",
+    "inventory": "npx playwright test tests/functional/inventory.spec.ts --headed",
+    "debug": "npx playwright test tests/demo/debug.example.spec.ts --headed",
+    "debug-ui": "npx playwright test tests/demo/debug.example.spec.ts --ui --headed",
+    "debug-cli": "cross-envPWDEBUG=1 npx playwright test tests/demo/debug.example.spec.ts"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +18,7 @@
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.61.0",
-    "@types/node": "^25.9.3"
+    "@types/node": "^25.9.3",
+    "cross-env": "^10.1.0"
   }
 }
