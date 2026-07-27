@@ -23,7 +23,7 @@ test.describe("Make Appointment", () => {
     //date input box
     await page.getByRole('textbox', { name: 'Visit Date (Required)' }).click();
     await page.getByRole('textbox', { name: 'Visit Date (Required)' }).fill('a');
-    //await page.getByRole('textbox', { name: 'Visit Date (Required)' }).press("Enter")
+    await page.getByRole('textbox', { name: 'Visit Date (Required)' }).press("Enter")
     
     
     //multi line comments
