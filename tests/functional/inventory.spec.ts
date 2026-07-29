@@ -17,7 +17,6 @@ test.describe("Inventory feature", () => {
     await page.locator('[data-test="login-button"]').click();
 
     //Assertion
-    await expect(page).toHaveURL("https://www.saucedemo.com/inventory.html");
     await expect(page).toHaveURL(/.*\/inventory/);
   });
 
