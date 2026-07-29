@@ -1,55 +1,38 @@
 import { test, expect } from "@playwright/test";
 
+test("Login with valid creds", async ({ page }) => {
+  await page.goto('https://katalon-demo-cura.herokuapp.com/');
 
-  test("Login with valid creds", async ({ page }) => {
-    await page.goto('https://katalon-demo-cura.herokuapp.com/');
-    
-    //Button elment actions
+  //Button element actions
+  //Other options tested: press("Enter"), dblclick(), click({button:"right"}), hover()
+  await page.getByRole('link', { name: 'Make Appointment' }).click({ timeout: 10_000 });
 
-    //await page.getByRole('link', { name: 'Make Appointment' }).click();
-    //await page.getByRole('link', { name: 'Make Appointment' }).press("Enter");
-    //await page.getByRole('link', { name: 'Make Appointment' }).dblclick()
-    //await page.getByRole('link', { name: 'Make Appointment' }).click({button:"right"})
-    //await page.getByRole('link', { name: 'Make Appointment' }).hover()
-    await page.getByRole('link', { name: 'Make Appointment' }).click({timeout:10_000})
+  //Textbox elements
+  await page.getByLabel("Username").fill(process.env.CURA_USER!);
+  await page.getByLabel("Password").fill(process.env.CURA_PASSWORD!);
+  await page.getByRole("button", { name: "Login" }).click();
 
-   //Textbox element
+  //Dropdown element - default option
+  await expect(page.getByLabel("Facility")).toHaveValue('Tokyo CURA Healthcare Center');
 
-   await page.getByLabel("Username").fill("John Doe");
-   // await page.getByLabel("Password").fill("ThisIsNotAPassword");
-   //await page.getByLabel("Password").clear();
-   await page.getByLabel("Password").fill("ThisIsNotAPassword");
-   //await page.getByLabel("Password").pressSequentially("John Doe",{delay:300})
-   await page.getByRole("button", { name: "Login" }).click();
+  //select by index
+  await page.getByLabel("Facility").selectOption({ index: 2 });
 
-  //Dropdown element
+  //assert count of options
+  let dropdownOptions = page.getByLabel("Facility").locator('option');
+  await expect(dropdownOptions).toHaveCount(3);
 
-  //default option
-  await expect(page.getByLabel("Facility")).toHaveValue('Tokyo CURA Healthcare Center')
-  //select labe:
-  //await page.getByLabel("Facility").selectOption({label:"Seoul CURA Healthcare Center"})
-  await page.getByLabel("Facility").selectOption({index:2})
-
-  //assert count
-  let dropdownoptons=page.getByLabel("Facility").locator('option')
-  await expect(dropdownoptons).toHaveCount(3)
-
-  //get all values
-  let listofelements=await page.getByLabel("Facility").all()
-
-  //for--off loop
-  let listofoptions=[]
-  for(let element of listofelements){
-   let elementstext=await element.textContent()
-   listofoptions.push(elementstext)
+  //get all option texts
+  let listOfElements = await dropdownOptions.all();
+  let listOfOptions = [];
+  for (let element of listOfElements) {
+    let elementText = await element.textContent();
+    listOfOptions.push(elementText);
   }
-  console.log(listofoptions)
+  console.log(listOfOptions);
 
-
-//checkbox and radio button
-//assert default option
-
- await expect(page.getByRole("radio", { name: "Medicare" })).toBeChecked()
- await page.getByRole("radio",{name:"Medicaid"}).check()
- await expect(page.getByRole("radio", { name: "Medicare" })).not.toBeChecked()
-})
+  //checkbox and radio button - assert default option
+  await expect(page.getByRole("radio", { name: "Medicare" })).toBeChecked();
+  await page.getByRole("radio", { name: "Medicaid" }).check();
+  await expect(page.getByRole("radio", { name: "Medicare" })).not.toBeChecked();
+});

@@ -4,34 +4,43 @@ test.describe("Make Appointment", () => {
   test.beforeEach("Login with valid creds", async ({ page }) => {
     await page.goto('https://katalon-demo-cura.herokuapp.com/');
     await page.getByRole('link', { name: 'Make Appointment' }).click();
-    await page.getByLabel("Username").fill("John Doe");
-    await page.getByLabel("Password").fill("ThisIsNotAPassword");
+    await page.getByLabel('Username').fill(process.env.CURA_USER!);
+    await page.getByLabel('Password').fill(process.env.CURA_PASSWORD!);
     await page.getByRole("button", { name: "Login" }).click();
-    await expect(page.getByRole("heading", { name: "Make Appointment" }),).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Make Appointment" })).toBeVisible();
   });
+  
 
   test("Should make an appointment with non-default values", async ({ page }) => {
 
     await page.getByLabel('Facility').selectOption('Hongkong CURA Healthcare Center');
 
     //checkbox
-    await page.getByRole("checkbox", { name: "Apply for hospital readmission" }).check();
+    const readmissionCheckbox = page.getByRole("checkbox", { name: "Apply for hospital readmission" });
+    await readmissionCheckbox.check();
+    await expect(readmissionCheckbox).toBeChecked();
 
     //radio button
-    await page.getByRole("radio", { name: "Medicaid" }).check();
+    const medicaidRadio = page.getByRole("radio", { name: "Medicaid" });
+    await medicaidRadio.check();
+    await expect(medicaidRadio).toBeChecked();
 
-    //date input box
-    await page.getByRole('textbox', { name: 'Visit Date (Required)' }).click();
-    await page.getByRole('textbox', { name: 'Visit Date (Required)' }).fill('05/12/2027');
-    await page.getByRole('textbox', { name: 'Visit Date (Required)' }).press("Enter")
-    
-    
-    //multi line comments
-    await page.getByRole("textbox", { name: "Comment" }).fill("this is a muylti line comments\ncaptured by playwrithgt codege");
+    //date input box - generate a date 30 days in the future to avoid hardcoded/expired dates
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 30);
+    const formattedDate = `${(futureDate.getMonth() + 1).toString().padStart(2, '0')}/${futureDate.getDate().toString().padStart(2, '0')}/${futureDate.getFullYear()}`;
+
+    const visitDateInput = page.getByRole('textbox', { name: 'Visit Date (Required)' });
+    await visitDateInput.click();
+    await visitDateInput.fill(formattedDate);
+    await visitDateInput.press("Enter");
+
+    //multi line comment
+    await page.getByRole("textbox", { name: "Comment" }).fill("This is a multi line comment\ncaptured by Playwright codegen");
     await page.getByRole("button", { name: "Book Appointment" }).click();
 
-    //visibility assert
-    await expect(page.locator("h2")).toContainText("Appointment Confirmation");
+    //visibility assert - use getByRole for consistency and to avoid strict-mode violations
+    await expect(page.getByRole("heading", { name: "Appointment Confirmation" })).toBeVisible();
   });
 
   //more tests go here...

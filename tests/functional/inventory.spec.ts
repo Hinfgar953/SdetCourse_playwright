@@ -12,8 +12,8 @@ test.describe("Inventory feature", () => {
     await page.goto("https://www.saucedemo.com/");
 
     //login
-    await page.locator('[data-test="username"]').fill("standard_user");
-    await page.locator('[data-test="password"]').fill("secret_sauce");
+    await page.locator('[data-test="username"]').fill(process.env.SECSAUCE_USER!);
+    await page.locator('[data-test="password"]').fill(process.env.SECSAUCE_PASSWORD!);
     await page.locator('[data-test="login-button"]').click();
 
     //Assertion
