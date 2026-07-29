@@ -16,7 +16,7 @@ test.describe("Inventory feature", () => {
     await page.locator('[data-test="password"]').fill(process.env.SECSAUCE_PASSWORD!);
     await page.locator('[data-test="login-button"]').click();
 
-    //Assertion
+   // //Assertion
     await expect(page).toHaveURL(/.*\/inventory/);
   });
 
