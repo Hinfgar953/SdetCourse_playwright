@@ -37,3 +37,13 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+          - name: Verify secret value
+  run: |
+    if [ "${{ secrets.SECSAUCE_PASSWORD }}" = "secret_sauce" ]; then
+      echo "✅ El secret coincide con el valor esperado"
+    else
+      echo "❌ El secret NO coincide"
+    fi
+    echo "Longitud del secret: ${#SECRET_VAL}"
+  env:
+    SECRET_VAL: ${{ secrets.SECSAUCE_PASSWORD }
