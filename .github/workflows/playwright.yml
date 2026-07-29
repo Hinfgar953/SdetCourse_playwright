@@ -23,6 +23,25 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
+      - name: Verify SECSAUCE secrets
+        run: |
+          if [ "$SAUCE_USER_VAL" = "standard_user" ]; then
+            echo "✅ SECSAUCE_USER coincide"
+          else
+            echo "❌ SECSAUCE_USER NO coincide"
+          fi
+          echo "Longitud SECSAUCE_USER: ${#SAUCE_USER_VAL}"
+
+          if [ "$SAUCE_PASS_VAL" = "secret_sauce" ]; then
+            echo "✅ SECSAUCE_PASSWORD coincide"
+          else
+            echo "❌ SECSAUCE_PASSWORD NO coincide"
+          fi
+          echo "Longitud SECSAUCE_PASSWORD: ${#SAUCE_PASS_VAL}"
+        env:
+          SAUCE_USER_VAL: ${{ secrets.SECSAUCE_USER }}
+          SAUCE_PASS_VAL: ${{ secrets.SECSAUCE_PASSWORD }}
+
       - name: Run Playwright tests
         run: npx playwright test
         env:
@@ -37,13 +56,3 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-          - name: Verify secret value
-  run: |
-    if [ "${{ secrets.SECSAUCE_PASSWORD }}" = "secret_sauce" ]; then
-      echo "✅ El secret coincide con el valor esperado"
-    else
-      echo "❌ El secret NO coincide"
-    fi
-    echo "Longitud del secret: ${#SECRET_VAL}"
-  env:
-    SECRET_VAL: ${{ secrets.SECSAUCE_PASSWORD }
